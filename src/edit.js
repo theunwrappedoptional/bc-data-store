@@ -3,7 +3,9 @@
  *
  * @see https://developer.wordpress.org/block-editor/reference-guides/packages/packages-i18n/
  */
+// eslint-disable-next-line no-unused-vars
 import { __ } from '@wordpress/i18n';
+import { useSelect, useDispatch } from '@wordpress/data';
 
 /**
  * React hook that is used to mark the block wrapper element.
@@ -30,9 +32,19 @@ import './editor.scss';
  * @return {WPElement} Element to render.
  */
 export default function Edit() {
+	const title = useSelect( ( select ) => {
+		return select( 'core/editor' ).getEditedPostAttribute( 'title' );
+	} );
+
+	const { editPost } = useDispatch( 'core/editor' );
+
 	return (
-		<p { ...useBlockProps() }>
-			{ __( 'Boilerplate – Hello from the editor!', 'boilerplate' ) }
-		</p>
+		<div { ...useBlockProps() }>
+			<h2>{ title }</h2>
+			<input
+				value={ title }
+				onChange={ ( e ) => editPost( { title: e.target.value } ) }
+			/>
+		</div>
 	);
 }
